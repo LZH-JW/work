@@ -1,0 +1,661 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "contractNumber_",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "networkName_",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "chainId_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "provider_",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "authorAccount_",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					}
+				],
+				"name": "Approved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "AuthorUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "agency",
+						"type": "address"
+					}
+				],
+				"name": "EvidenceAgencyUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"name": "Rejected",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "submitter",
+						"type": "address"
+					}
+				],
+				"name": "Submitted",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "VERSION",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					}
+				],
+				"name": "approve",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "author",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "idHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "string",
+						"name": "contact",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "chainId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "reproductionRight",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "distributionRight",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "networkCommunicationRight",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "adaptationRight",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "translationRight",
+								"type": "bool"
+							},
+							{
+								"internalType": "string",
+								"name": "otherPropertyRights",
+								"type": "string"
+							}
+						],
+						"internalType": "struct CopyrightAgreementV1.RightsScope",
+						"name": "scope",
+						"type": "tuple"
+					},
+					{
+						"internalType": "string",
+						"name": "territory_",
+						"type": "string"
+					},
+					{
+						"internalType": "uint64",
+						"name": "startAt",
+						"type": "uint64"
+					},
+					{
+						"internalType": "uint64",
+						"name": "endAt",
+						"type": "uint64"
+					}
+				],
+				"name": "configureRights",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "contractNumber",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "deployedAt",
+				"outputs": [
+					{
+						"internalType": "uint64",
+						"name": "",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "evidenceAgency",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					}
+				],
+				"name": "getCopyrightInfo",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "_author",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_contentHash",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_metadataJson",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "_isActive",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint64",
+						"name": "_submittedAt",
+						"type": "uint64"
+					},
+					{
+						"internalType": "uint64",
+						"name": "_approvedAt",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getSummary",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "_number",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_version",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_networkName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_chainId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					},
+					{
+						"internalType": "uint64",
+						"name": "_deployedAt",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "networkName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "provider",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "records",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "exists",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "submitter",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "contentHash",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "metadataJson",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "isActive",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint64",
+						"name": "submittedAt",
+						"type": "uint64"
+					},
+					{
+						"internalType": "uint64",
+						"name": "approvedAt",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "contentHash",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "metadataJson",
+						"type": "string"
+					}
+				],
+				"name": "registerCopyright",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "dramaId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"name": "reject",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rights",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "reproductionRight",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "distributionRight",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "networkCommunicationRight",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "adaptationRight",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "translationRight",
+						"type": "bool"
+					},
+					{
+						"internalType": "string",
+						"name": "otherPropertyRights",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rightsEndAt",
+				"outputs": [
+					{
+						"internalType": "uint64",
+						"name": "",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rightsStartAt",
+				"outputs": [
+					{
+						"internalType": "uint64",
+						"name": "",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "idHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "string",
+						"name": "contact",
+						"type": "string"
+					}
+				],
+				"name": "setAuthorInfo",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "agency",
+						"type": "address"
+					}
+				],
+				"name": "setEvidenceAgency",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "territory",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "CopyrightAgreementV1 基于区块链的版权智能合约（V1.0） - 创作者提交信息与作品元数据 - 基础设施提供者（审核方）审核通过后，记录为有效版权合约 - 提供概要与记录查询接口，便于前端展示到“版权合约”位置",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"CopyrightAgreementV1.sol": "CopyrightAgreementV1"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"CopyrightAgreementV1.sol": {
+			"keccak256": "0xaa76ca96af675c492cf76933735caab420a9c4a44fdcfbd9e6472fc9023f48e4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9daf1557d4b0f0a9b0ea02bddfe721a4d76e240622b3c2e2a1bc5298c5c906e7",
+				"dweb:/ipfs/QmeERL95iCLaf3gH3PSRKgqjPCz3BDFpjH2Uh7aSLAiJ2Q"
+			]
+		}
+	},
+	"version": 1
+}

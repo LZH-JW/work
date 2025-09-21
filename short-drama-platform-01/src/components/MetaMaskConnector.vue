@@ -56,13 +56,31 @@
           </div>
         </div>
 
-        <!-- 网络信息 -->
+        <!-- 网络信息（可切换） -->
         <div class="network-section">
           <label class="info-label">网络</label>
-          <a-tag color="green" class="network-tag">
-            <GlobalOutlined />
-            {{ networkName }}
-          </a-tag>
+          <a-dropdown placement="bottomCenter">
+            <a-button type="default" class="network-tag">
+              <GlobalOutlined />
+              {{ networkName }}
+              <DownOutlined />
+            </a-button>
+            <template #overlay>
+              <a-menu class="network-menu">
+                <div class="menu-header">切换网络</div>
+                <a-menu-item 
+                  v-for="net in availableNetworks" 
+                  :key="net.chainIdHex" 
+                  @click="onSwitchNetwork(net)"
+                >
+                  <div class="network-menu-item">
+                    <span class="network-name">{{ net.name }}</span>
+                    <span class="network-id">({{ net.chainId }})</span>
+                  </div>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
         </div>
       </div>
 
@@ -226,9 +244,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { message } from 'ant-design-vue'
 import { ethers } from 'ethers'
+import { useBlockchainStore } from '@/stores/blockchain'
 import {
   WalletOutlined,
   CheckCircleOutlined,
@@ -258,6 +277,30 @@ const account = ref('')
 const balance = ref('0')
 const networkName = ref('localhost')
 const availableAccounts = ref([])
+const availableNetworks = ref([
+  { name: 'Sepolia', chainId: 11155111, chainIdHex: '0xaa36a7', rpcUrls: ['https://sepolia.infura.io/v3/'], currency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 } },
+  { name: 'Chain 1337', chainId: 1337, chainIdHex: '0x539', rpcUrls: ['http://127.0.0.1:8545'], currency: { name: 'ETH', symbol: 'ETH', decimals: 18 } },
+  { name: 'Polygon Amoy', chainId: 80002, chainIdHex: '0x13882', rpcUrls: ['https://rpc-amoy.polygon.technology'], currency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 } }
+])
+
+// 与全局区块链存储同步（用于订阅 NFT 管理等组件）
+const blockchain = useBlockchainStore()
+
+// 当本组件账户变化时，同步到全局 store（仅同步地址，不修改连接状态）
+watch(account, (newAccount) => {
+  if (newAccount) {
+    if (blockchain.account !== newAccount) blockchain.account = newAccount
+  } else if (blockchain.account) {
+    blockchain.account = ''
+  }
+})
+
+// 当全局 store 账户变化（例如其他连接器触发）时，回填到本组件
+watch(() => blockchain.account, (storeAccount) => {
+  if (storeAccount !== account.value) {
+    account.value = storeAccount || ''
+  }
+})
 
 // 格式化地址
 const formatAddress = (address) => {
@@ -476,6 +519,47 @@ const refreshBalance = async () => {
     message.error('刷新余额失败: ' + error.message)
   } finally {
     loadingBalance.value = false
+  }
+}
+
+// 切换网络
+const onSwitchNetwork = async (net) => {
+  try {
+    if (!window.ethereum) throw new Error('MetaMask 未检测到')
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: net.chainIdHex }]
+    })
+    // 成功后更新显示
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const network = await provider.getNetwork()
+    networkName.value = network.name === 'unknown' ? `Chain ${network.chainId}` : network.name
+    message.success(`已切换到 ${net.name}`)
+  } catch (err) {
+    // 4902: 未添加到 MetaMask
+    if (err?.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: net.chainIdHex,
+            chainName: net.name,
+            rpcUrls: net.rpcUrls,
+            nativeCurrency: net.currency
+          }]
+        })
+        message.success(`已添加并切换到 ${net.name}`)
+        const provider = new ethers.BrowserProvider(window.ethereum)
+        const network = await provider.getNetwork()
+        networkName.value = network.name === 'unknown' ? `Chain ${network.chainId}` : network.name
+      } catch (e) {
+        message.error(`添加网络失败: ${e.message}`)
+      }
+    } else if (err?.code === 4001) {
+      message.info('已取消切换网络')
+    } else {
+      message.error(`切换网络失败: ${err?.message || err}`)
+    }
   }
 }
 
@@ -719,9 +803,23 @@ const setupEventListeners = () => {
     }
   })
 
-  // 网络变化
-  window.ethereum.on('chainChanged', () => {
-    window.location.reload()
+  // 网络变化：在本页内刷新状态而不跳转
+  window.ethereum.on('chainChanged', async () => {
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const network = await provider.getNetwork()
+      networkName.value = network.name === 'unknown' ? `Chain ${network.chainId}` : network.name
+      // 若已显示余额则刷新一次
+      if (showBalance.value && account.value) {
+        const bal = await provider.getBalance(account.value)
+        balance.value = ethers.formatEther(bal)
+      }
+      // 更新账户列表以确保显示正确余额
+      await loadAllAccounts(provider)
+      message.success('网络已切换')
+    } catch (e) {
+      console.error('处理 chainChanged 失败:', e)
+    }
   })
 
   // 断开连接

@@ -80,10 +80,12 @@
 </template>
 
 <script>
+import { useBlockchainStore } from '@/stores/blockchain'
 export default {
   name: 'SimpleNFTWidget',
   data() {
     return {
+      blockchain: null,
       connecting: false,
       minting: false,
       checking: false,
@@ -343,6 +345,21 @@ export default {
   },
 
   async mounted() {
+    // 绑定全局区块链 store，同步账户与连接状态
+    try {
+      this.blockchain = useBlockchainStore()
+      // 初始化一次
+      this.walletConnected = !!this.blockchain.connected
+      this.currentAccount = this.blockchain.account || this.currentAccount
+      // 响应式监听：当外部切换账户或连接状态变化时自动更新
+      this.$watch(() => this.blockchain.account, (addr) => {
+        this.currentAccount = addr || ''
+      })
+      this.$watch(() => this.blockchain.connected, (c) => {
+        this.walletConnected = !!c
+      })
+    } catch (_) {}
+
     // 检查是否已经连接钱包
     if (window.ethereum) {
       try {
@@ -351,6 +368,16 @@ export default {
           this.walletConnected = true
           this.currentAccount = accounts[0]
         }
+        // 监听 MetaMask 账户变化，确保与全局及本地显示保持一致
+        window.ethereum.on?.('accountsChanged', (accounts) => {
+          if (Array.isArray(accounts) && accounts.length > 0) {
+            this.walletConnected = true
+            this.currentAccount = accounts[0]
+          } else {
+            this.walletConnected = false
+            this.currentAccount = ''
+          }
+        })
       } catch (error) {
         console.log('检查钱包连接状态失败:', error)
       }
